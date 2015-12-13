@@ -1,6 +1,6 @@
 name:                advent
 version:             0.1.0.0
-synopsis:            Simple project template from stack
+synopsis:            Solve advent puzzles
 description:         Please see README.md
 homepage:            http://github.com/patrickherrmann/advent#readme
 license:             BSD3
