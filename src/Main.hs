@@ -1,5 +1,7 @@
-module Main where
+import Day1
+import Prelude hiding (floor)
 
 main :: IO ()
 main = do
-  putStrLn "hello world"
+  input <- readFile "inputs/Day1.txt"
+  print $ position input
