@@ -14,9 +14,8 @@ floor ('(':cs) = floor cs + 1
 floor (')':cs) = floor cs - 1
 
 position :: String -> Position
-position s = position' s 0 0
-
-position' :: String -> Floor -> Position -> Position
-position' _ (-1) p = p
-position' ('(':cs) f p = position' cs (f + 1) (p + 1)
-position' (')':cs) f p = position' cs (f - 1) (p + 1)
+position s = go s 0 0
+  where
+    go _ (-1) p = p
+    go ('(':cs) f p = go cs (f + 1) (p + 1)
+    go (')':cs) f p = go cs (f - 1) (p + 1)
