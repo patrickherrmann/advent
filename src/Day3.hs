@@ -4,11 +4,17 @@ import Data.List
 
 type Point = (Int, Int)
 
-houses :: String -> Int
-houses s = go s [(0, 0)]
+housesVisited :: String -> Int
+housesVisited s = go s [(0, 0)]
   where
     go [] vs = length $ nub vs
     go (c:cs) vs@(v:_) = go cs (move v c:vs)
+
+housesVisitedWithRoboSanta :: String -> Int
+housesVisitedWithRoboSanta s = go s [(0, 0), (0, 0)]
+  where
+    go [] vs = length $ nub vs
+    go (sc:rc:cs) vs@(sv:rv:_) = go cs (move sv sc:move rv rc:vs)
 
 move :: Point -> Char -> Point
 move (x, y) d = case d of
