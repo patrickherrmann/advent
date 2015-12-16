@@ -1,17 +1,15 @@
 module Day1
-  ( floor
+  ( finalFloor
   , position
   ) where
-
-import Prelude hiding (floor)
 
 type Floor = Int
 type Position = Int
 
-floor :: String -> Floor
-floor [] = 0
-floor ('(':cs) = floor cs + 1
-floor (')':cs) = floor cs - 1
+finalFloor :: String -> Floor
+finalFloor [] = 0
+finalFloor ('(':cs) = finalFloor cs + 1
+finalFloor (')':cs) = finalFloor cs - 1
 
 position :: String -> Position
 position s = go s 0 0
