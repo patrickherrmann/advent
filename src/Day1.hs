@@ -1,17 +1,11 @@
-module Day1
-  ( finalFloor
-  , position
-  ) where
+module Day1 where
 
-type Floor = Int
-type Position = Int
-
-finalFloor :: String -> Floor
+finalFloor :: String -> Int
 finalFloor [] = 0
 finalFloor ('(':cs) = finalFloor cs + 1
 finalFloor (')':cs) = finalFloor cs - 1
 
-position :: String -> Position
+position :: String -> Int
 position s = go s 0 0
   where
     go _ (-1) p = p
