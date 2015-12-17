@@ -1,0 +1,1 @@
+This package contains my solutions to the puzzles at [adventofcode.com](http://adventofcode.com). In my first pass, I'm solving using the simplest method I can to reach the correct answer, disregarding performance.
