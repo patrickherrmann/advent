@@ -1,4 +1,4 @@
-This package contains my solutions to the puzzles at [adventofcode.com](http://adventofcode.com). In my first pass, I'm solving using the simplest method I can to reach the correct answer, disregarding performance.
+This package contains my solutions to the puzzles at [adventofcode.com](http://adventofcode.com).
 
 Each day of the challenge has its own module. There is no `main` function; load up the modules with `stack repl` and execute functions from any day. All of the my inputs are available in the `inputs` directory.
 
