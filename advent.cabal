@@ -27,4 +27,5 @@ library
                       split,
                       containers,
                       parsec,
+                      mtl,
                       MissingH

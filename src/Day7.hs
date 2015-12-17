@@ -2,13 +2,14 @@ module Day7 where
 
 import Control.Applicative hiding ((<|>))
 import Data.Word
-import Text.Parsec
+import Data.Bits
+import Text.Parsec hiding (State)
 import Text.Parsec.String
+import Data.Map.Strict ((!))
 import qualified Data.Map.Strict as Map
+import Control.Monad.State.Lazy
 
-type AST = [Command]
-
-data Command = Command Expr Ident deriving (Show)
+type Instruction = (Ident, Expr)
 
 data Expr
   = Atom Atom
@@ -31,22 +32,54 @@ type Env = Map.Map Ident Expr
 
 -- Interpret AST
 
+findSignalAtA :: String -> Signal
+findSignalAtA s = evalState (evalIdent "a") $ parseEnv s
+
+findSignalAtAWithModifiedB :: String -> Signal
+findSignalAtAWithModifiedB s = evalState (evalIdent "a") env'
+  where
+    env = parseEnv s
+    env' = Map.insert "b" (Atom (Lit 956)) env
+
+evalIdent :: Ident -> State Env Signal
+evalIdent i = lookupIdent i >>= eval
+
+eval :: Expr -> State Env Signal
+eval (Atom a) = evalAtom a
+eval (Or a b) = (.|.) <$> evalAtom a <*> evalAtom b
+eval (And a b) = (.&.) <$> evalAtom a <*> evalAtom b
+eval (LShift i b) = (`shift` b) <$> evalIdent i
+eval (RShift i b) = (`shift` (-b)) <$> evalIdent i
+eval (Not a) = complement <$> evalAtom a
+
+evalAtom :: Atom -> State Env Signal
+evalAtom (Lit s) = return s
+evalAtom (Ref i) = do
+  s <- evalIdent i
+  memoizeIdent i s
+  return s
+
+lookupIdent :: Ident -> State Env Expr
+lookupIdent i = gets (! i)
+
+memoizeIdent :: Ident -> Signal -> State Env ()
+memoizeIdent i s = modify (Map.insert i (Atom (Lit s)))
 
 -- Parsing AST
 
-parseAST :: String -> AST
-parseAST s = cs
-  where (Right cs) = parse commands "" s
+parseEnv :: String -> Env
+parseEnv s = cs
+  where (Right cs) = parse instructions "" s
 
-commands :: Parser [Command]
-commands = command `sepEndBy` endOfLine
+instructions :: Parser Env
+instructions = Map.fromList <$> instruction `sepEndBy` endOfLine
 
-command :: Parser Command
-command = do
+instruction :: Parser Instruction
+instruction = do
   e <- expr
   string " -> "
   i <- ident
-  return $ Command e i
+  return (i, e)
 
 expr :: Parser Expr
 expr = try andExpr
