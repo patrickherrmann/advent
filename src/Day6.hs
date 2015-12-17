@@ -1,16 +1,10 @@
 module Day6 where
 
-import Data.Foldable
+import Data.Foldable (foldl')
 import Control.Applicative hiding ((<|>))
 import qualified Data.Map.Strict as Map
 import Text.Parsec
 import Text.Parsec.String
-
-type Grid = Map.Map Coord Status
-
-type Coord = (Int, Int)
-
-data Status = On | Off deriving (Eq)
 
 data Command = Command Action Range
 
@@ -21,6 +15,21 @@ data Action
 
 data Range = Range Coord Coord
 
+type Coord = (Int, Int)
+
+coords :: [Coord]
+coords = [(x, y) | x <- [0..999], y <- [0..999]]
+
+coordsInRange :: Range -> [Coord]
+coordsInRange (Range (lx, ly) (hx, hy)) =
+  [(x, y) | x <- [lx..hx], y <- [ly..hy]]
+
+-- Part 1
+
+type Grid = Map.Map Coord Status
+
+data Status = On | Off deriving (Eq)
+
 countLightsAfterCommands :: String -> Int
 countLightsAfterCommands s = lightsOn fg
   where
@@ -29,7 +38,6 @@ countLightsAfterCommands s = lightsOn fg
 
 createGrid :: Grid
 createGrid = Map.fromList $ zip coords $ repeat Off
-  where coords = [(x, y) | x <- [0..999], y <- [0..999]]
 
 performCommand :: Grid -> Command -> Grid
 performCommand grid (Command a r) = foldl' (flip act) grid cs
@@ -46,16 +54,35 @@ performAction Toggle Off = On
 performAction TurnOn _ = On
 performAction TurnOff _ = Off
 
-coordsInRange :: Range -> [Coord]
-coordsInRange (Range (lx, ly) (hx, hy)) =
-  [(x, y) | x <- [lx..hx], y <- [ly..hy]]
+-- Part 2
 
-insideRange :: Range -> Coord -> Bool
-insideRange (Range (lx, ly) (hx, hy)) (x, y) =
-  x >= lx &&
-  y >= ly &&
-  x <= hx &&
-  y <= hy
+type Grid2 = Map.Map Coord Brightness
+
+type Brightness = Int
+
+measureBrightnessAfterCommands :: String -> Int
+measureBrightnessAfterCommands s = totalBrightness fg
+  where
+    cs = parseCommands s
+    fg = foldl' performCommand2 createGrid2 cs
+
+createGrid2 :: Grid2
+createGrid2 = Map.fromList $ zip coords $ repeat 0
+
+performCommand2 :: Grid2 -> Command -> Grid2
+performCommand2 grid (Command a r) = foldl' (flip act) grid cs
+  where
+    act = Map.adjust (performAction2 a)
+    cs = coordsInRange r
+
+totalBrightness :: Grid2 -> Int
+totalBrightness = sum . Map.elems
+
+performAction2 :: Action -> Brightness -> Brightness
+performAction2 Toggle b = b + 2
+performAction2 TurnOn b = b + 1
+performAction2 TurnOff 0 = 0
+performAction2 TurnOff b = b - 1
 
 -- Parsing commands
 
@@ -64,7 +91,7 @@ parseCommands s = cs
   where (Right cs) = parse commands "" s
 
 commands :: Parser [Command]
-commands = command `sepBy` endOfLine
+commands = command `sepEndBy` endOfLine
 
 command :: Parser Command
 command = do
