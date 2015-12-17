@@ -3,13 +3,16 @@ module Day5 where
 import Data.List
 import Data.List.Split
 
-niceCount :: String -> Int
-niceCount = length . filter isNice . lines
+niceCount :: (String -> Bool) -> String -> Int
+niceCount isNice = length . filter isNice . lines
 
-isNice :: String -> Bool
-isNice s = hasEnoughVowels s
+isNice1 :: String -> Bool
+isNice1 s = hasEnoughVowels s
             && not (hasIllegalPair s)
             && hasDoubleLetter s
+
+isNice2 :: String -> Bool
+isNice2 s = hasRecurringPair s && hasSandwich s
 
 hasEnoughVowels :: String -> Bool
 hasEnoughVowels = (== 3) . length . take 3 . filter isVowel
@@ -21,3 +24,11 @@ hasIllegalPair s = any (`isInfixOf` s) bannedGroups
 
 hasDoubleLetter :: String -> Bool
 hasDoubleLetter = any ((>1) . length) . group
+
+hasRecurringPair :: String -> Bool
+hasRecurringPair (a:b:cs) = [a, b] `isInfixOf` cs || hasRecurringPair (b:cs)
+hasRecurringPair _ = False
+
+hasSandwich :: String -> Bool
+hasSandwich (a:b:c:cs) = a == c || hasSandwich (b:c:cs)
+hasSandwich _ = False
