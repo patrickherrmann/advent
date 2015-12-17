@@ -68,11 +68,11 @@ memoizeIdent i s = modify (Map.insert i (Atom (Lit s)))
 -- Parsing AST
 
 parseEnv :: String -> Env
-parseEnv s = cs
-  where (Right cs) = parse instructions "" s
+parseEnv s = Map.fromList is
+  where (Right is) = parse instructions "" s
 
-instructions :: Parser Env
-instructions = Map.fromList <$> instruction `sepEndBy` endOfLine
+instructions :: Parser [Instruction]
+instructions = instruction `sepEndBy` endOfLine
 
 instruction :: Parser Instruction
 instruction = do
