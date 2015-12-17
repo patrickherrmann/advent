@@ -30,8 +30,6 @@ type Signal = Word16
 
 type Env = Map.Map Ident Expr
 
--- Interpret AST
-
 findSignalAtA :: String -> Signal
 findSignalAtA s = evalState (evalIdent "a") $ parseEnv s
 
@@ -41,16 +39,18 @@ findSignalAtAWithModifiedB s = evalState (evalIdent "a") env'
     env = parseEnv s
     env' = Map.insert "b" (Atom (Lit 956)) env
 
-evalIdent :: Ident -> State Env Signal
-evalIdent i = lookupIdent i >>= eval
+-- Memoized evaluation of the environment
 
-eval :: Expr -> State Env Signal
-eval (Atom a) = evalAtom a
-eval (Or a b) = (.|.) <$> evalAtom a <*> evalAtom b
-eval (And a b) = (.&.) <$> evalAtom a <*> evalAtom b
-eval (LShift i b) = (`shift` b) <$> evalIdent i
-eval (RShift i b) = (`shift` (-b)) <$> evalIdent i
-eval (Not a) = complement <$> evalAtom a
+evalIdent :: Ident -> State Env Signal
+evalIdent i = lookupIdent i >>= evalExpr
+
+evalExpr :: Expr -> State Env Signal
+evalExpr (Atom a) = evalAtom a
+evalExpr (Or a b) = (.|.) <$> evalAtom a <*> evalAtom b
+evalExpr (And a b) = (.&.) <$> evalAtom a <*> evalAtom b
+evalExpr (LShift i b) = (`shift` b) <$> evalIdent i
+evalExpr (RShift i b) = (`shift` (-b)) <$> evalIdent i
+evalExpr (Not a) = complement <$> evalAtom a
 
 evalAtom :: Atom -> State Env Signal
 evalAtom (Lit s) = return s
