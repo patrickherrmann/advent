@@ -69,71 +69,29 @@ memoizeIdent i s = modify (Map.insert i (Atom (Lit s)))
 
 parseEnv :: String -> Env
 parseEnv s = Map.fromList is
-  where (Right is) = parse instructions "" s
-
-instructions :: Parser [Instruction]
-instructions = instruction `sepEndBy` endOfLine
-
-instruction :: Parser Instruction
-instruction = do
-  e <- expr
-  string " -> "
-  i <- ident
-  return (i, e)
-
-expr :: Parser Expr
-expr = try andExpr
-   <|> try orExpr
-   <|> try lShiftExpr
-   <|> try rShiftExpr
-   <|> try notExpr
-   <|> atomExpr
-
-atomExpr :: Parser Expr
-atomExpr = Atom <$> atom
-
-atom :: Parser Atom
-atom = try litAtom <|> refAtom
-
-litAtom :: Parser Atom
-litAtom = Lit <$> (read <$> many1 digit)
-
-refAtom :: Parser Atom
-refAtom = Ref <$> ident
-
-andExpr :: Parser Expr
-andExpr = do
-  x <- atom
-  string " AND "
-  y <- atom
-  return $ And x y
-
-orExpr :: Parser Expr
-orExpr = do
-  x <- atom
-  string " OR "
-  y <- atom
-  return $ Or x y
-
-lShiftExpr :: Parser Expr
-lShiftExpr = do
-  x <- ident
-  string " LSHIFT "
-  bs <- num
-  return $ LShift x bs
-
-rShiftExpr :: Parser Expr
-rShiftExpr = do
-  x <- ident
-  string " RSHIFT "
-  bs <- num
-  return $ RShift x bs
-
-notExpr :: Parser Expr
-notExpr = Not <$> (string "NOT " *> atom)
-
-num :: Parser Int
-num = read <$> many1 digit
-
-ident :: Parser Ident
-ident = many1 lower
+  where
+    (Right is) = parse instructions "" s
+    instructions = instruction `sepEndBy` endOfLine
+    instruction :: Parser Instruction
+    instruction = do
+      e <- expr
+      void $ string " -> "
+      i <- ident
+      return (i, e)
+    expr = try andExpr
+       <|> try orExpr
+       <|> try lShiftExpr
+       <|> try rShiftExpr
+       <|> try notExpr
+       <|> atomExpr
+    atomExpr = Atom <$> atom
+    atom = try litAtom <|> refAtom
+    litAtom = Lit <$> (read <$> many1 digit)
+    refAtom = Ref <$> ident
+    andExpr = And <$> atom <*> (string " AND " *> atom)
+    orExpr = Or <$> atom <*> (string " OR " *> atom)
+    lShiftExpr = LShift <$> ident <*> (string " LSHIFT " *> num)
+    rShiftExpr = RShift <$> ident <*> (string " RSHIFT " *> num)
+    notExpr = Not <$> (string "NOT " *> atom)
+    num = read <$> many1 digit
+    ident = many1 lower
