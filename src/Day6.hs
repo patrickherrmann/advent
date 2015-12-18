@@ -1,10 +1,11 @@
 module Day6 where
 
-import Data.Foldable (foldl')
 import Control.Applicative hiding ((<|>))
-import qualified Data.Map.Strict as Map
+import Control.Monad
+import Control.Monad.ST
+import Data.Array.MArray hiding (range)
+import Data.Array.ST hiding (range)
 import Text.Parsec
-import Text.Parsec.String
 
 data Command = Command Action Range
 
@@ -26,57 +27,62 @@ coordsInRange (Range (lx, ly) (hx, hy)) =
 
 -- Part 1
 
-type Grid = Map.Map Coord Status
+type Grid s = STUArray s Coord Status
 
-data Status = On | Off deriving (Eq)
+type Status = Bool
 
 countLightsAfterCommands :: String -> Int
-countLightsAfterCommands s = lightsOn fg
-  where
-    cs = parseCommands s
-    fg = foldl' performCommand createGrid cs
+countLightsAfterCommands s = runST $ do
+  let cs = parseCommands s
+  grid <- createGrid
+  forM_ cs $ \c -> performCommand grid c
+  lightsOn grid
 
-createGrid :: Grid
-createGrid = Map.fromList $ zip coords $ repeat Off
+createGrid ::ST s (Grid s)
+createGrid = newArray ((0, 0), (999,999)) False
 
-performCommand :: Grid -> Command -> Grid
-performCommand grid (Command a r) = foldl' (flip act) grid cs
-  where
-    act = Map.adjust (performAction a)
-    cs = coordsInRange r
+performCommand :: Grid s -> Command -> ST s ()
+performCommand grid (Command a r) = do
+  let cs = coordsInRange r
+  forM_ cs $ \c -> do
+    b <- readArray grid c
+    writeArray grid c $ performAction a b
 
-lightsOn :: Grid -> Int
-lightsOn = length . filter (== On) . Map.elems
+lightsOn :: Grid s -> ST s Int
+lightsOn grid = do
+  es <- getElems grid
+  return $ length $ filter id es
 
 performAction :: Action -> Status -> Status
-performAction Toggle On = Off
-performAction Toggle Off = On
-performAction TurnOn _ = On
-performAction TurnOff _ = Off
+performAction Toggle = not
+performAction TurnOn = const True
+performAction TurnOff = const False
 
 -- Part 2
 
-type Grid2 = Map.Map Coord Brightness
+type Grid2 s = STUArray s Coord Brightness
 
 type Brightness = Int
 
 measureBrightnessAfterCommands :: String -> Int
-measureBrightnessAfterCommands s = totalBrightness fg
-  where
-    cs = parseCommands s
-    fg = foldl' performCommand2 createGrid2 cs
+measureBrightnessAfterCommands s = runST $ do
+  let cs = parseCommands s
+  grid <- createGrid2
+  forM_ cs $ \c -> performCommand2 grid c
+  gridBrightness grid
 
-createGrid2 :: Grid2
-createGrid2 = Map.fromList $ zip coords $ repeat 0
+createGrid2 ::ST s (Grid2 s)
+createGrid2 = newArray ((0, 0), (999,999)) 0
 
-performCommand2 :: Grid2 -> Command -> Grid2
-performCommand2 grid (Command a r) = foldl' (flip act) grid cs
-  where
-    act = Map.adjust (performAction2 a)
-    cs = coordsInRange r
+performCommand2 :: Grid2 s -> Command -> ST s ()
+performCommand2 grid (Command a r) = do
+  let cs = coordsInRange r
+  forM_ cs $ \c -> do
+    b <- readArray grid c
+    writeArray grid c $ performAction2 a b
 
-totalBrightness :: Grid2 -> Int
-totalBrightness = sum . Map.elems
+gridBrightness :: Grid2 s -> ST s Int
+gridBrightness grid = sum <$> getElems grid
 
 performAction2 :: Action -> Brightness -> Brightness
 performAction2 Toggle b = b + 2
@@ -88,38 +94,14 @@ performAction2 TurnOff b = b - 1
 
 parseCommands :: String -> [Command]
 parseCommands s = cs
-  where (Right cs) = parse commands "" s
-
-commands :: Parser [Command]
-commands = command `sepEndBy` endOfLine
-
-command :: Parser Command
-command = do
-  a <- action
-  space
-  r <- range
-  return $ Command a r
-
-action :: Parser Action
-action = try turnOn <|> try turnOff <|> toggle
   where
+    (Right cs) = parse commands "" s
+    commands = command `sepEndBy` endOfLine
+    command = Command <$> action <*> (space *> range)
+    action = try turnOn <|> try turnOff <|> toggle
     turnOn = string "turn on" *> return TurnOn
     turnOff = string "turn off" *> return TurnOff
     toggle = string "toggle" *> return Toggle
-
-range :: Parser Range
-range = do
-  lo <- coord
-  string " through "
-  hi <- coord
-  return $ Range lo hi
-
-coord :: Parser Coord
-coord = do
-  x <- num
-  char ','
-  y <- num
-  return (x, y)
-
-num :: Parser Int
-num = read <$> many1 digit
+    range = Range <$> coord <*> (string " through " *> coord)
+    coord = (,) <$> num <*> (char ',' *> num)
+    num = read <$> many1 digit
