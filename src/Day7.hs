@@ -1,6 +1,5 @@
 module Day7 where
 
-import Control.Applicative hiding ((<|>))
 import Data.Word
 import Data.Bits
 import Text.Parsec hiding (State)

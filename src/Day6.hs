@@ -1,6 +1,5 @@
 module Day6 where
 
-import Control.Applicative hiding ((<|>))
 import Control.Monad
 import Control.Monad.ST
 import Data.Array.MArray hiding (range)

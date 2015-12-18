@@ -1,7 +1,6 @@
 module Day5 where
 
 import Data.List
-import Data.List.Split
 
 niceCount :: (String -> Bool) -> String -> Int
 niceCount isNice = length . filter isNice . lines
