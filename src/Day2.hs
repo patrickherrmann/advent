@@ -1,6 +1,5 @@
 module Day2 where
 
-import Control.Applicative
 import Data.List.Split
 
 type Box = (Int, Int, Int)
