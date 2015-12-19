@@ -6,7 +6,7 @@ For example, to solve both parts of the first puzzle, you can execute:
 
 ```
 $ stack exec ghci
-λ> import Day1
+λ> :m Day1
 λ> day1input <- readFile "inputs/Day1.txt"
 λ> finalFloor day1input
 74
