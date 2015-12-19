@@ -5,12 +5,17 @@ import Text.Parsec
 import Control.Monad
 import Data.List
 import Data.Ord
-import Data.Map ((!))
+import qualified Data.Map as Map
 
-maximumHappiness :: String -> Int
-maximumHappiness s = d
+maximumWithoutPat :: String -> Int
+maximumWithoutPat = maximumHappiness . constructGraph . parseEdges
+
+maximumWithPat :: String -> Int
+maximumWithPat = maximumHappiness . addPat . constructGraph . parseEdges
+
+maximumHappiness :: Graph -> Int
+maximumHappiness g = d
   where
-    g = constructGraph $ parseEdges s
     (_, d) = maximumBy (comparing snd) ps
     ps = measuredPaths happinessChange g
 
@@ -19,7 +24,14 @@ happinessChange es = sum . map cost . pairs . closed
   where
     closed ns@(n:_) = ns ++ [n]
     pairs ns = zip ns (tail ns)
-    cost (a, b) = (es ! (a, b)) + (es ! (b, a))
+    cost (a, b) = (es Map.! (a, b)) + (es Map.! (b, a))
+
+addPat :: Graph -> Graph
+addPat (Graph ns es) = Graph (pat:ns) es'
+  where
+    newEs n = [((pat, n), 0), ((n, pat), 0)]
+    es' = es `Map.union` Map.fromList (ns >>= newEs)
+    pat = "Pat"
 
 parseEdges :: String -> [Edge]
 parseEdges s = es
