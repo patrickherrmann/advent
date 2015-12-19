@@ -1,6 +1,6 @@
 {-# LANGUAGE ViewPatterns #-}
 
-module Day8 where
+module Day08 where
 
 totalCharsDiff :: String -> Int
 totalCharsDiff = sum . map charDiff . lines

@@ -1,4 +1,4 @@
-module Day7 where
+module Day07 where
 
 import Data.Word
 import Data.Bits
