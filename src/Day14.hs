@@ -7,8 +7,7 @@ import Data.List
 data Reindeer = Reindeer String Int Int Int deriving (Show)
 
 winningDistance :: [Reindeer] -> Int -> Int
-winningDistance rs t = maximum $ map (!! t) ds
-  where ds = reindeerDistanceGraph <$> rs
+winningDistance rs t = maximum $ map (!! t) $ reindeerDistanceGraphs rs
 
 winningPoints :: [Reindeer] -> Int -> Int
 winningPoints rs t = maximum points
@@ -17,9 +16,9 @@ winningPoints rs t = maximum points
     graphs = map (take t) $ reindeerDistanceGraphs rs
 
 pointsGraphs :: [[Int]] -> [[Int]]
-pointsGraphs ds = scores
+pointsGraphs = scores
   where
-    scores = transpose $  map points $ transpose ds
+    scores = transpose . map points . transpose
     points g = let m = maximum g in map (score m) g
     score m s
       | m == s = 1
