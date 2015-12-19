@@ -36,5 +36,4 @@ library
                       array,
                       parsec,
                       mtl,
-                      MissingH,
-                      multimap
+                      MissingH

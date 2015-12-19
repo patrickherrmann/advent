@@ -1,11 +1,8 @@
 module Day9 where
 
 import Data.List
-import Data.List.Split
-import Data.Maybe
 import Data.Ord
 import Text.Parsec
-import Text.Parsec.String
 import qualified Data.Map as Map
 
 type City = String
