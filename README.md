@@ -6,11 +6,11 @@ For example, to solve both parts of the first puzzle, you can execute:
 
 ```
 $ stack exec ghci
-λ> :m Day1
-λ> day1input <- readFile "inputs/Day01.txt"
-λ> finalFloor day1input
+λ> :m Day01
+λ> input <- readFile "inputs/Day01.txt"
+λ> finalFloor input
 74
-λ> position day1input
+λ> position input
 1795
 
 ```
