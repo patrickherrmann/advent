@@ -10,12 +10,6 @@ import Data.Scientific
 import Data.ByteString.Lazy.Char8 (pack)
 import qualified Data.HashMap.Strict as HM
 
-findAndAddNumbers :: String -> Int
-findAndAddNumbers = addNumbers . decodeJson
-
-findAndAddNonRedNumbers :: String -> Int
-findAndAddNonRedNumbers = addNonRedNumbers . decodeJson
-
 decodeJson :: String -> Value
 decodeJson = fromJust . decode . pack
 
