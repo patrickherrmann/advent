@@ -5,7 +5,7 @@ import Data.List
 nextPassword :: String -> String
 nextPassword s = reverse next
   where
-    ps = iterate incPassword (reverse s)
+    (_:ps) = iterate incPassword (reverse s)
     (Just next) = find isValidPassword ps
 
 
@@ -35,6 +35,6 @@ containsDoubles s = length pairs >= 2
   where pairs = filter (\g -> length g == 2) (group s)
 
 containsRun :: String -> Bool
-containsRun (c:b:a:cs) = (c == succ b && b == succ a)
-  || containsRun (b:a:cs)
+containsRun (c:r@(b:a:cs)) = (c == succ b && b == succ a)
+  || containsRun r
 containsRun _ = False
