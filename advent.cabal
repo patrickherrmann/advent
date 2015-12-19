@@ -31,11 +31,17 @@ library
                       Day08,
                       Day09,
                       Day10,
-                      Day11
+                      Day11,
+                      Day12
   build-depends:      base >= 4.8 && < 5,
                       split,
                       containers,
                       array,
                       parsec,
                       mtl,
-                      MissingH
+                      MissingH,
+                      aeson,
+                      scientific,
+                      unordered-containers,
+                      bytestring,
+                      vector
