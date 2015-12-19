@@ -5,38 +5,41 @@ import Data.Ord
 import Text.Parsec
 import qualified Data.Map as Map
 
-type City = String
+type Node = String
 type Distance = Int
-type Path = [City]
+type Path = [Node]
 type MeasuredPath = (Path, Distance)
-type Edge = ((City, City), Distance)
-type EdgeMap = Map.Map (City, City) Distance
+type Edge = ((Node, Node), Distance)
+type EdgeMap = Map.Map (Node, Node) Distance
 
-data Graph = Graph [City] EdgeMap
+data Graph = Graph [Node] EdgeMap deriving (Show)
 
 parseGraph :: String -> Graph
-parseGraph = constructGraph . parseEdges
+parseGraph = constructGraph . addInverses . parseEdges
 
 longestPath :: Graph -> MeasuredPath
-longestPath = maximumBy (comparing snd) . measuredPaths
+longestPath = maximumBy (comparing snd) . measuredPaths pathDistance
 
 shortestPath :: Graph -> MeasuredPath
-shortestPath = minimumBy (comparing snd) . measuredPaths
+shortestPath = minimumBy (comparing snd) . measuredPaths pathDistance
 
-measuredPaths :: Graph -> [MeasuredPath]
-measuredPaths (Graph cs es) = map (\p -> (p, pathDistance es p)) ps
-  where ps = permutations cs
+measuredPaths :: (EdgeMap -> Path -> Distance) -> Graph -> [MeasuredPath]
+measuredPaths m (Graph ns es) = map (\p -> (p, m es p)) paths
+  where paths = permutations ns
 
 pathDistance :: EdgeMap -> Path -> Int
 pathDistance es p = sum $ map (es Map.!) pairs
   where pairs = zip p (tail p)
 
 constructGraph :: [Edge] -> Graph
-constructGraph es = Graph cities edges
+constructGraph es = Graph nodes edges
   where
-    edges = Map.fromList $ es ++ map flipEdge es
-    flipEdge ((a, b), d) = ((b, a), d)
-    cities = nub $ map fst $ Map.keys edges
+    edges = Map.fromList es
+    nodes = nub $ map fst $ Map.keys edges
+
+addInverses :: [Edge] -> [Edge]
+addInverses es = es ++ map flipEdge es
+  where flipEdge ((a, b), d) = ((b, a), d)
 
 parseEdges :: String -> [Edge]
 parseEdges s = es

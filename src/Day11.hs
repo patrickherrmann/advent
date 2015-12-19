@@ -19,7 +19,7 @@ incPassword (c:cs) = next c : cs
     next 'h' = 'j'
     next 'n' = 'p'
     next 'k' = 'm'
-    next c = succ c
+    next x = succ x
 
 isValidPassword :: String -> Bool
 isValidPassword s = not (containsIllegalChars s)
@@ -35,6 +35,6 @@ containsDoubles s = length pairs >= 2
   where pairs = filter (\g -> length g == 2) (group s)
 
 containsRun :: String -> Bool
-containsRun (c:r@(b:a:cs)) = (c == succ b && b == succ a)
+containsRun (c:r@(b:a:_)) = (c == succ b && b == succ a)
   || containsRun r
 containsRun _ = False

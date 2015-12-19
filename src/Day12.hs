@@ -28,5 +28,5 @@ addNonRedNumbers (Object (HM.elems -> vs))
 addNonRedNumbers _ = 0
 
 valueIsRed :: Value -> Bool
-valueIsRed (String t) | t == "red" = True
+valueIsRed (String t) = t == "red"
 valueIsRed _ = False
