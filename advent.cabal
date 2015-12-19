@@ -29,7 +29,8 @@ library
                       Day06,
                       Day07,
                       Day08,
-                      Day09
+                      Day09,
+                      Day10
   build-depends:      base >= 4.8 && < 5,
                       split,
                       containers,
