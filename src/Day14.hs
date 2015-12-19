@@ -2,12 +2,31 @@ module Day14 where
 
 import Text.Parsec
 import Control.Monad
+import Data.List
 
 data Reindeer = Reindeer String Int Int Int deriving (Show)
 
 winningDistance :: [Reindeer] -> Int -> Int
 winningDistance rs t = maximum $ map (!! t) ds
   where ds = reindeerDistanceGraph <$> rs
+
+winningPoints :: [Reindeer] -> Int -> Int
+winningPoints rs t = maximum points
+  where
+    points = map sum $ pointsGraphs graphs
+    graphs = map (take t) $ reindeerDistanceGraphs rs
+
+pointsGraphs :: [[Int]] -> [[Int]]
+pointsGraphs ds = scores
+  where
+    scores = transpose $  map points $ transpose ds
+    points g = let m = maximum g in map (score m) g
+    score m s
+      | m == s = 1
+      | otherwise = 0
+
+reindeerDistanceGraphs :: [Reindeer] -> [[Int]]
+reindeerDistanceGraphs = map reindeerDistanceGraph
 
 reindeerDistanceGraph :: Reindeer -> [Int]
 reindeerDistanceGraph (Reindeer _ speed burst rest) = ds
