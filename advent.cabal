@@ -34,7 +34,8 @@ library
                       Day11,
                       Day12,
                       Day13,
-                      Day14
+                      Day14,
+                      Day15
   build-depends:      base >= 4.8 && < 5,
                       split,
                       containers,
@@ -44,6 +45,4 @@ library
                       MissingH,
                       aeson,
                       scientific,
-                      unordered-containers,
-                      bytestring,
-                      vector
+                      bytestring

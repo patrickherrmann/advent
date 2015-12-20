@@ -5,26 +5,24 @@ module Day12 where
 
 import Data.Aeson
 import Data.Maybe
-import qualified Data.Vector as V
 import Data.Scientific
 import Data.ByteString.Lazy.Char8 (pack)
-import qualified Data.HashMap.Strict as HM
 
 decodeJson :: String -> Value
 decodeJson = fromJust . decode . pack
 
 addNumbers :: Value -> Int
 addNumbers (Number n) = fromJust $ toBoundedInteger n
-addNumbers (Array a) = sum . map addNumbers $ V.toList a
-addNumbers (Object o) = sum . map addNumbers $ HM.elems o
+addNumbers (Array a) = sum $ fmap addNumbers a
+addNumbers (Object o) = sum $ fmap addNumbers o
 addNumbers _ = 0
 
 addNonRedNumbers :: Value -> Int
 addNonRedNumbers (Number n) = fromJust $ toBoundedInteger n
-addNonRedNumbers (Array a) = sum . map addNonRedNumbers $ V.toList a
-addNonRedNumbers (Object (HM.elems -> vs))
-  | any valueIsRed vs = 0
-  | otherwise = sum $ map addNonRedNumbers vs
+addNonRedNumbers (Array a) = sum $ fmap addNonRedNumbers a
+addNonRedNumbers (Object o)
+  | any valueIsRed o = 0
+  | otherwise = sum $ fmap addNonRedNumbers o
 addNonRedNumbers _ = 0
 
 valueIsRed :: Value -> Bool

@@ -12,9 +12,7 @@ extra-deps:
 - dlist-0.7.1.2
 - hashable-1.2.3.3
 - hslogger-1.2.9
-- monad-loops-0.4.3
 - mtl-2.2.1
-- multimap-1.2.1
 - network-2.6.2.1
 - old-locale-1.0.0.7
 - old-time-1.1.0.3
@@ -24,7 +22,7 @@ extra-deps:
 - regex-base-0.93.2
 - regex-compat-0.95.1
 - regex-posix-0.95.2
-- scientific-0.3.4.2
+- scientific-0.3.4.4
 - split-0.2.2
 - syb-0.6
 - text-1.2.1.3
