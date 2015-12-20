@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ViewPatterns #-}
 
 module Day12 where
 
@@ -13,16 +12,16 @@ decodeJson = fromJust . decode . pack
 
 addNumbers :: Value -> Int
 addNumbers (Number n) = fromJust $ toBoundedInteger n
-addNumbers (Array a) = sum $ fmap addNumbers a
-addNumbers (Object o) = sum $ fmap addNumbers o
+addNumbers (Array a) = sum $ addNumbers <$> a
+addNumbers (Object o) = sum $ addNumbers <$> o
 addNumbers _ = 0
 
 addNonRedNumbers :: Value -> Int
 addNonRedNumbers (Number n) = fromJust $ toBoundedInteger n
-addNonRedNumbers (Array a) = sum $ fmap addNonRedNumbers a
+addNonRedNumbers (Array a) = sum $ addNonRedNumbers <$> a
 addNonRedNumbers (Object o)
   | any valueIsRed o = 0
-  | otherwise = sum $ fmap addNonRedNumbers o
+  | otherwise = sum $ addNonRedNumbers <$> o
 addNonRedNumbers _ = 0
 
 valueIsRed :: Value -> Bool
