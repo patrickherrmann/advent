@@ -7,19 +7,24 @@ import qualified Data.Map as Map
 
 type Coord = (Int, Int)
 type Grid = Map.Map (Int, Int) Bool
+type GridRules = Grid -> Coord -> Bool
 
 lightsOn :: Grid -> Int
 lightsOn = length . filter id . Map.elems
 
-gridSequence :: Grid -> [Grid]
-gridSequence = iterate nextGrid
+nextGrid :: GridRules -> Grid -> Grid
+nextGrid rules g = Map.fromList assocs
+  where assocs = map (\c -> (c, rules g c)) coords
 
-nextGrid :: Grid -> Grid
-nextGrid g = Map.fromList assocs
-  where assocs = map (\c -> (c, newState g c)) coords
+fixedCorners :: GridRules
+fixedCorners _ (1, 1) = True
+fixedCorners _ (1, 100) = True
+fixedCorners _ (100, 1) = True
+fixedCorners _ (100, 100) = True
+fixedCorners g c = standardRules g c
 
-newState :: Grid -> Coord -> Bool
-newState g c = shouldStayOn || shouldTurnOn
+standardRules :: Grid -> Coord -> Bool
+standardRules g c = shouldStayOn || shouldTurnOn
   where
     currentState = g ! c
     shouldStayOn = currentState && neighborsActive `elem` [2, 3]
