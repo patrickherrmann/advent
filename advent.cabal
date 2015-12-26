@@ -49,4 +49,5 @@ library
                       MissingH,
                       aeson,
                       scientific,
-                      bytestring
+                      bytestring,
+                      text
