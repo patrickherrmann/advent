@@ -17,11 +17,9 @@ nextGrid rules g = Map.fromList assocs
   where assocs = map (\c -> (c, rules g c)) coords
 
 fixedCorners :: GridRules
-fixedCorners _ (1, 1) = True
-fixedCorners _ (1, 100) = True
-fixedCorners _ (100, 1) = True
-fixedCorners _ (100, 100) = True
-fixedCorners g c = standardRules g c
+fixedCorners g c@(x, y)
+  | (x == 1 || x == 100) && (y == 1 || y == 100) = True
+  | otherwise = standardRules g c
 
 standardRules :: Grid -> Coord -> Bool
 standardRules g c = shouldStayOn || shouldTurnOn
