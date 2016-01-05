@@ -24,11 +24,18 @@ data Role
   | Boss
   deriving (Eq)
 
+mostExpensiveLoss :: Attacker -> Gold
+mostExpensiveLoss = maximum . map fst . filter ((== Boss) . snd) . allOutcomes
+
 cheapestWin :: Attacker -> Gold
-cheapestWin boss = minimum . map fst $ filter outcome players
+cheapestWin = minimum . map fst . filter ((== Player) . snd) . allOutcomes
+
+allOutcomes :: Attacker -> [(Gold, Role)]
+allOutcomes boss = (outcome <$>) <$> players
   where
-    outcome (_, p) = (simulateBattle $ Battle Player boss p) == Player
+    outcome = simulateBattle . Battle Player boss
     players = createPlayer 100 <$> itemSets
+
 
 simulateBattle :: Battle -> Role
 simulateBattle b@(Battle _ (Attacker bhp _ _) (Attacker php _ _))
