@@ -40,7 +40,8 @@ library
                       Day17,
                       Day18,
                       Day19,
-                      Day20
+                      Day20,
+                      Day21
   build-depends:      base >= 4.8 && < 5,
                       split,
                       containers,
@@ -51,4 +52,5 @@ library
                       aeson,
                       scientific,
                       bytestring,
-                      text
+                      text,
+                      safe
