@@ -16,8 +16,9 @@ totalRibbonRequired = sum . map ribbonRequired . readBoxes
 
 ribbonRequired :: Box -> Int
 ribbonRequired (l, w, h) = wrap + bow
-  where wrap = 2 * minimum [l + w, l + h, w + h]
-        bow = l * w * h
+  where
+    wrap = 2 * minimum [l + w, l + h, w + h]
+    bow = l * w * h
 
 readBoxes :: String -> [Box]
 readBoxes s = readBox <$> lines s

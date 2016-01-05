@@ -8,8 +8,8 @@ nextPassword s = reverse next
     (_:ps) = iterate incPassword (reverse s)
     (Just next) = find isValidPassword ps
 
-
--- The following functions operate on *reversed* passwords
+-- The following functions operate on *reversed* passwords,
+-- so that incrementing them is a more efficient cons operation
 
 incPassword :: String -> String
 incPassword [] = "a"

@@ -2,7 +2,6 @@ module Day16 where
 
 import Text.Parsec
 import Control.Monad
-import Data.Maybe
 
 type Compound = (String, Int)
 type CompoundReading = String -> (Int -> Int -> Bool)
@@ -51,6 +50,6 @@ parseSues s = ss
       void $ many space
       prop <- many1 letter
       void $ string ": "
-      count <- num
-      return (prop, count)
+      n <- num
+      return (prop, n)
     num = read <$> many1 digit

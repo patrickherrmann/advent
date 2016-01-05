@@ -12,8 +12,7 @@ type Sub = (Text, Text)
 type Molecule = Text
 
 flipSubs :: [Sub] -> [Sub]
-flipSubs = map flipSub
-  where flipSub (a, b) = (b, a)
+flipSubs = map (\(a, b) -> (b, a))
 
 fewestSubs :: [Sub] -> Molecule -> Int
 fewestSubs subs m
