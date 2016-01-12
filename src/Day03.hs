@@ -17,7 +17,7 @@ housesVisitedWithRoboSanta s = go s [(0, 0), (0, 0)]
     go (sc:rc:cs) vs@(sv:rv:_) = go cs (move sv sc:move rv rc:vs)
 
 move :: Point -> Char -> Point
-move (x, y) d = case d of
+move (x, y) = \case
   '>' -> (x + 1, y)
   '<' -> (x - 1, y)
   '^' -> (x, y + 1)
