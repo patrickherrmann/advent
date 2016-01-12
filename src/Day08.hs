@@ -1,5 +1,3 @@
-{-# LANGUAGE ViewPatterns #-}
-
 module Day08 where
 
 totalCharsDiff :: String -> Int
