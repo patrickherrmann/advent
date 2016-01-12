@@ -85,10 +85,11 @@ gridBrightness :: Grid2 s -> ST s Int
 gridBrightness grid = sum <$> getElems grid
 
 performAction2 :: Action -> Brightness -> Brightness
-performAction2 Toggle b = b + 2
-performAction2 TurnOn b = b + 1
-performAction2 TurnOff 0 = 0
-performAction2 TurnOff b = b - 1
+performAction2 = curry $ \case
+  (Toggle, b)  -> b + 2
+  (TurnOn, b)  -> b + 1
+  (TurnOff, 0) -> 0
+  (TurnOff, b) -> b - 1
 
 -- Parsing commands
 
