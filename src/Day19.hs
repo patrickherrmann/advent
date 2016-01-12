@@ -37,7 +37,7 @@ performSub (a, b) mol = variations
 parsePuzzle :: String -> ([Sub], Molecule)
 parsePuzzle s = p
   where
-    (Right p) = parse puzzle "" s
+    Right p = parse puzzle "" s
     puzzle = (,) <$> subs <*> mol
     subs = sub `endBy` endOfLine
     sub = (,) <$> txt <*> (string " => " *> txt)

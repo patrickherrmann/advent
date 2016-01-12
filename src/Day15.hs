@@ -30,7 +30,7 @@ scoreStat = atLeastZero . sum
 parseIngredients :: String -> [Ingredient]
 parseIngredients s = is
   where
-    (Right is) = parse ingredients "" s
+    Right is = parse ingredients "" s
     ingredients = ingredient `sepEndBy` endOfLine
     ingredient = do
       n <- name

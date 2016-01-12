@@ -6,5 +6,5 @@ repeatLookAndSay :: Int -> String -> String
 repeatLookAndSay n = (!! n) . iterate lookAndSay
 
 lookAndSay :: String -> String
-lookAndSay = concatMap say . group
+lookAndSay = (>>= say) . group
   where say g = show (length g) ++ take 1 g

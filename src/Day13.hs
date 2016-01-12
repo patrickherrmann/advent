@@ -14,10 +14,7 @@ maximumWithPat :: String -> Int
 maximumWithPat = maximumHappiness . addPat . constructGraph . parseEdges
 
 maximumHappiness :: Graph -> Int
-maximumHappiness g = d
-  where
-    (_, d) = maximumBy (comparing snd) ps
-    ps = measuredPaths happinessChange g
+maximumHappiness = maximum . map snd . measuredPaths happinessChange
 
 happinessChange :: EdgeMap -> Path -> Int
 happinessChange es = sum . map cost . pairs . closed
@@ -36,7 +33,7 @@ addPat (Graph ns es) = Graph (pat:ns) es'
 parseEdges :: String -> [Edge]
 parseEdges s = es
   where
-    (Right es) = parse edges "" s
+    Right es = parse edges "" s
     edges = edge `sepEndBy` endOfLine
     edge = do
       a <- person

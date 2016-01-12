@@ -44,7 +44,7 @@ addInverses es = es ++ map flipEdge es
 parseEdges :: String -> [Edge]
 parseEdges s = es
   where
-    (Right es) = parse edges "" s
+    Right es = parse edges "" s
     edges = edge `sepEndBy` endOfLine
     edge = (,) <$> cityPair <*> (string " = " *> num)
     cityPair = (,) <$> city <*> (string " to " *> city)

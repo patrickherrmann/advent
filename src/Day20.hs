@@ -4,11 +4,11 @@ import Data.List
 
 guessSmallestFactor :: Int -> Int
 guessSmallestFactor n = i
-  where (Just i) = find ((>=n).presents) [320000, 320320..]
+  where Just i = find ((>=n).presents) [320000, 320320..]
 
 guessSmallestFactor2 :: Int -> Int
 guessSmallestFactor2 n = i
-  where (Just i) = find ((>=n).presents2) [320000, 320320..]
+  where Just i = find ((>=n).presents2) [320000, 320320..]
 
 factors :: Int -> [Int]
 factors n = 1 : n : [x | x <- [2..n2], n `rem` x == 0]

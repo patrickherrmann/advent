@@ -39,7 +39,7 @@ naiveCompoundReading _ = (==)
 parseSues :: String -> [Sue]
 parseSues s = ss
   where
-    (Right ss) = parse sues "" s
+    Right ss = parse sues "" s
     sues = sue `sepEndBy` endOfLine
     sue = do
       void $ string "Sue "

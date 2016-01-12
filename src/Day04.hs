@@ -10,7 +10,7 @@ import Data.ByteString.Base16
 findAdventCoin :: String -> Int -> Int
 findAdventCoin (pack -> key) zs = i
   where
-    (Just i) = find (makesAdventCoin key prefix) [1..]
+    Just i = find (makesAdventCoin key prefix) [1..]
     prefix = BS.replicate zs 48 -- '0'
 
 makesAdventCoin :: ByteString -> ByteString -> Int -> Bool

@@ -5,8 +5,8 @@ import Data.List
 nextPassword :: String -> String
 nextPassword s = reverse next
   where
-    (_:ps) = iterate incPassword (reverse s)
-    (Just next) = find isValidPassword ps
+    _:ps = iterate incPassword (reverse s)
+    Just next = find isValidPassword ps
 
 -- The following functions operate on *reversed* passwords,
 -- so that incrementing them is a more efficient cons operation

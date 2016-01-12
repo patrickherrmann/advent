@@ -71,7 +71,7 @@ memoizeIdent i s = modify (Map.insert i (Atom (Lit s)))
 parseEnv :: String -> Env
 parseEnv s = Map.fromList is
   where
-    (Right is) = parse instructions "" s
+    Right is = parse instructions "" s
     instructions = instruction `sepEndBy` endOfLine
     instruction :: Parser Instruction
     instruction = do

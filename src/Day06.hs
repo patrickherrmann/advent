@@ -96,7 +96,7 @@ performAction2 = curry $ \case
 parseCommands :: String -> [Command]
 parseCommands s = cs
   where
-    (Right cs) = parse commands "" s
+    Right cs = parse commands "" s
     commands = command `sepEndBy` endOfLine
     command = Command <$> action <*> (space *> range)
     action = try turnOn <|> try turnOff <|> toggle
