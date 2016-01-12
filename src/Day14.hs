@@ -36,7 +36,7 @@ reindeerDistanceGraph (Reindeer _ speed burst rest) = ds
 parseReindeer :: String -> [Reindeer]
 parseReindeer s = rs
   where
-    (Right rs) = parse reindeers "" s
+    Right rs = parse reindeers "" s
     reindeers = reindeer `sepEndBy` endOfLine
     reindeer = do
       n <- name
