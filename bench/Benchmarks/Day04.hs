@@ -5,5 +5,5 @@ import Day04
 
 benchmarks :: [Benchmark]
 benchmarks =
-  [ bench "findAdventCoin" (nf (findAdventCoin "ckczppom") 6)
+  [ bench "findAdventCoin" (nf (findAdventCoin "ckczppom") 5)
   ]
