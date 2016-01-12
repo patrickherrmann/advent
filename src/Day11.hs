@@ -12,14 +12,16 @@ nextPassword s = reverse next
 -- so that incrementing them is a more efficient cons operation
 
 incPassword :: String -> String
-incPassword [] = "a"
-incPassword ('z':cs) = 'a' : incPassword cs
-incPassword (c:cs) = next c : cs
+incPassword = \case
+    []     -> "a"
+    'z':cs -> 'a' : incPassword cs
+    c:cs   -> next c : cs
   where
-    next 'h' = 'j'
-    next 'n' = 'p'
-    next 'k' = 'm'
-    next x = succ x
+    next = \case
+      'h' -> 'j'
+      'n' -> 'p'
+      'k' -> 'm'
+      x   -> succ x
 
 isValidPassword :: String -> Bool
 isValidPassword s = not (containsIllegalChars s)

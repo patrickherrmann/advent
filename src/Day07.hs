@@ -44,19 +44,21 @@ evalIdent :: Ident -> State Env Signal
 evalIdent i = lookupIdent i >>= evalExpr
 
 evalExpr :: Expr -> State Env Signal
-evalExpr (Atom a) = evalAtom a
-evalExpr (Or a b) = (.|.) <$> evalAtom a <*> evalAtom b
-evalExpr (And a b) = (.&.) <$> evalAtom a <*> evalAtom b
-evalExpr (LShift i b) = (`shift` b) <$> evalIdent i
-evalExpr (RShift i b) = (`shift` (-b)) <$> evalIdent i
-evalExpr (Not a) = complement <$> evalAtom a
+evalExpr = \case
+  Atom a -> evalAtom a
+  Or a b -> (.|.) <$> evalAtom a <*> evalAtom b
+  And a b -> (.&.) <$> evalAtom a <*> evalAtom b
+  LShift i b -> (`shift` b) <$> evalIdent i
+  RShift i b -> (`shift` (-b)) <$> evalIdent i
+  Not a -> complement <$> evalAtom a
 
 evalAtom :: Atom -> State Env Signal
-evalAtom (Lit s) = return s
-evalAtom (Ref i) = do
-  s <- evalIdent i
-  memoizeIdent i s
-  return s
+evalAtom = \case
+  Lit s -> return s
+  Ref i -> do
+    s <- evalIdent i
+    memoizeIdent i s
+    return s
 
 lookupIdent :: Ident -> State Env Expr
 lookupIdent i = gets (! i)

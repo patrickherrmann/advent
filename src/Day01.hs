@@ -1,9 +1,10 @@
 module Day01 where
 
 finalFloor :: String -> Int
-finalFloor [] = 0
-finalFloor ('(':cs) = finalFloor cs + 1
-finalFloor (')':cs) = finalFloor cs - 1
+finalFloor = \case
+  [] -> 0
+  '(':cs -> finalFloor cs + 1
+  ')':cs -> finalFloor cs - 1
 
 position :: String -> Int
 position s = go s 0 0

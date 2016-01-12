@@ -43,10 +43,11 @@ simulateBattle b@(Battle _ (Attacker bhp _ _) (Attacker php _ _))
   | otherwise = simulateBattle $ advanceBattle b
 
 advanceBattle :: Battle -> Battle
-advanceBattle (Battle Player (Attacker hp bd a) p@(Attacker _ d _)) =
-  (Battle Boss (Attacker (hp - d + a) bd a) p)
-advanceBattle (Battle Boss b@(Attacker _ d _) (Attacker php pd pa)) =
-  (Battle Player b (Attacker (php - d + pa) pd pa))
+advanceBattle = \case
+  Battle Player (Attacker hp bd a) p@(Attacker _ d _) ->
+    (Battle Boss (Attacker (hp - d + a) bd a) p)
+  Battle Boss b@(Attacker _ d _) (Attacker php pd pa) ->
+    (Battle Player b (Attacker (php - d + pa) pd pa))
 
 createPlayer :: HitPoints -> [Item] -> (Gold, Attacker)
 createPlayer h = foldr equipItem (0, (Attacker h 0 0))

@@ -53,9 +53,10 @@ lightsOn grid = do
   return $ length $ filter id es
 
 performAction :: Action -> Status -> Status
-performAction Toggle = not
-performAction TurnOn = const True
-performAction TurnOff = const False
+performAction = \case
+  Toggle  -> not
+  TurnOn  -> const True
+  TurnOff -> const False
 
 -- Part 2
 

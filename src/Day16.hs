@@ -26,11 +26,12 @@ detectedCompounds =
   ]
 
 trueCompoundReading :: CompoundReading
-trueCompoundReading "cats" = (>)
-trueCompoundReading "trees" = (>)
-trueCompoundReading "pomeranians" = (<)
-trueCompoundReading "goldfish" = (<)
-trueCompoundReading _ = (==)
+trueCompoundReading = \case
+  "cats"        -> (>)
+  "trees"       -> (>)
+  "pomeranians" -> (<)
+  "goldfish"    -> (<)
+  _             -> (==)
 
 naiveCompoundReading :: CompoundReading
 naiveCompoundReading _ = (==)

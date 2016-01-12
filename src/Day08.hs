@@ -13,11 +13,12 @@ charDiff :: String -> Int
 charDiff s = length s + 2 - chars s
 
 chars :: String -> Int
-chars ('\\':'\\':cs) = 1 + chars cs
-chars ('\\':'"':cs) = 1 + chars cs
-chars ('\\':'x':(isHex -> True):(isHex -> True):cs) = 1 + chars cs
-chars (_:cs) = 1 + chars cs
-chars [] = 0
+chars = \case
+  '\\':'\\':cs -> 1 + chars cs
+  '\\':'"':cs -> 1 + chars cs
+  '\\':'x':(isHex -> True):(isHex -> True):cs -> 1 + chars cs
+  _:cs -> 1 + chars cs
+  [] -> 0
 
 specialChars :: String -> Int
 specialChars = length . filter isSpecial

@@ -25,9 +25,11 @@ hasDoubleLetter :: String -> Bool
 hasDoubleLetter = any ((>1) . length) . group
 
 hasRecurringPair :: String -> Bool
-hasRecurringPair (a:b:cs) = [a, b] `isInfixOf` cs || hasRecurringPair (b:cs)
-hasRecurringPair _ = False
+hasRecurringPair = \case
+  a:b:cs -> [a, b] `isInfixOf` cs || hasRecurringPair (b:cs)
+  _      -> False
 
 hasSandwich :: String -> Bool
-hasSandwich (a:b:c:cs) = a == c || hasSandwich (b:c:cs)
-hasSandwich _ = False
+hasSandwich = \case
+  a:b:c:cs -> a == c || hasSandwich (b:c:cs)
+  _        -> False
