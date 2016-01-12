@@ -60,6 +60,7 @@ benchmark criterion
   ghc-options:        -O2
   main-is:            Benchmarks.hs
   type:               exitcode-stdio-1.0
+  other-modules:      Benchmarks.Day04
   build-depends:      base,
                       advent,
                       criterion
