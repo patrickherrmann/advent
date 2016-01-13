@@ -6,7 +6,7 @@ homepage:             http://github.com/patrickherrmann/advent#readme
 license:              BSD3
 license-file:         LICENSE
 author:               Patrick Herrmann
-copyright:            Patrick Herrmann
+copyright:            Patrick Herrmann 2016
 maintainer:           patrickwherrmann@gmail.com
 category:             Puzzles
 build-type:           Simple
