@@ -1,5 +1,3 @@
-{-# LANGUAGE QuasiQuotes #-}
-
 module Benchmarks.Day06 (benchmarks) where
 
 import Text.Heredoc

@@ -56,9 +56,10 @@ library
 
 benchmark criterion
   default-language:   Haskell2010
+  default-extensions: QuasiQuotes
   hs-source-dirs:     bench
-  ghc-options:        -O2
   main-is:            Benchmarks.hs
+  ghc-options:        -O2
   type:               exitcode-stdio-1.0
   other-modules:      Benchmarks.Day04
                       Benchmarks.Day06
