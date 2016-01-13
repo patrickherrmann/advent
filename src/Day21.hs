@@ -13,11 +13,7 @@ data Attacker = Attacker HitPoints Damage Armor
 
 data Item = Item String Gold Damage Armor
 
-data Battle = Battle
-  { turn :: Role
-  , boss :: Attacker
-  , player :: Attacker
-  }
+data Battle = Battle Role Attacker Attacker
 
 data Role
   = Player
