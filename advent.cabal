@@ -61,9 +61,11 @@ benchmark criterion
   main-is:            Benchmarks.hs
   type:               exitcode-stdio-1.0
   other-modules:      Benchmarks.Day04
+                      Benchmarks.Day06
   build-depends:      base,
                       advent,
-                      criterion
+                      criterion,
+                      heredoc
 
 source-repository head
   type:               git

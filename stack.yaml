@@ -18,6 +18,7 @@ extra-deps:
 - erf-2.0.0.0
 - hashable-1.2.3.3
 - hastache-0.6.1
+- heredoc-0.2.0.0
 - ieee754-0.7.8
 - math-functions-0.1.5.2
 - monad-par-0.3.4.7
