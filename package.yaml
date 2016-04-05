@@ -1,0 +1,43 @@
+name: advent
+version: 0.1.0.0
+synopsis: My solutions for the puzzles during the advent of code.
+license: BSD3
+author: Patrick Herrmann
+copyright: 2016 Patrick Herrmann
+maintainer: patrickwherrmann@gmail.com
+category: Puzzles
+
+github: patrickherrmann/advent
+
+ghc-options: -O2 -Wall
+default-extensions:
+  - LambdaCase
+  - ViewPatterns
+dependencies:
+  - base
+
+library:
+  source-dirs: src
+  dependencies:
+    - split
+    - containers
+    - array
+    - parsec
+    - mtl
+    - aeson
+    - scientific
+    - bytestring
+    - base16-bytestring
+    - cryptohash
+    - text
+    - safe
+
+benchmarks:
+  criterion:
+    source-dirs: bench
+    main: Benchmarks.hs
+    default-extensions: QuasiQuotes
+    dependencies:
+      - advent
+      - criterion
+      - heredoc
