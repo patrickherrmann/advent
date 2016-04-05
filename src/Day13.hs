@@ -3,8 +3,6 @@ module Day13 where
 import Day09 hiding (parseEdges, pathDistance)
 import Text.Parsec
 import Control.Monad
-import Data.List
-import Data.Ord
 import qualified Data.Map as Map
 
 maximumWithoutPat :: String -> Int

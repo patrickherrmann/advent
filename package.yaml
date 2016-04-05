@@ -9,7 +9,7 @@ category: Puzzles
 
 github: patrickherrmann/advent
 
-ghc-options: -O2 -Wall
+ghc-options: -O2 -Wall -fno-warn-incomplete-patterns
 default-extensions:
   - LambdaCase
   - ViewPatterns
@@ -19,18 +19,19 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-    - split
-    - containers
-    - array
-    - parsec
-    - mtl
     - aeson
-    - scientific
-    - bytestring
+    - array
     - base16-bytestring
+    - bytestring
+    - containers
     - cryptohash
-    - text
+    - lens
+    - mtl
+    - parsec
     - safe
+    - scientific
+    - split
+    - text
 
 benchmarks:
   criterion:
