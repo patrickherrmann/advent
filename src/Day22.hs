@@ -4,8 +4,11 @@ module Day22 where
 
 import Control.Lens
 import Control.Monad
+import Control.Monad.State.Lazy
 
-type Outcome = Either Role GameState
+type Outcome = Either Result GameState
+
+type Result = (Role, Int)
 
 data GameState = GameState
   { _playerHealth :: Int
@@ -36,10 +39,10 @@ data Attack = Attack
 data Spell = Spell
   { name :: String
   , cost :: Int
-  , result :: SpellResult
+  , action :: SpellAction
   } deriving (Show)
 
-data SpellResult
+data SpellAction
   = AttackBoss Attack
   | StartEffect Effect
   deriving (Show)
@@ -52,6 +55,55 @@ data Role
 makeLenses ''GameState
 makeLenses ''Effect
 
+cheapestWin :: GameState -> Int
+cheapestWin gs = execState (findCheapestWin gs) maxBound
+
+findCheapestWin :: GameState -> State Int ()
+findCheapestWin gs = pruneTree gs $
+  case applyEffects gs of
+    Left r -> recordResult r
+    Right gs' -> forM_ (performTurn gs') $ \case
+      Left r -> recordResult r
+      Right gs'' -> findCheapestWin $ endTurn gs''
+
+pruneTree :: GameState -> State Int () -> State Int ()
+pruneTree gs a = do
+  m <- get
+  if gs^.manaSpent >= m
+    then return ()
+    else a
+
+recordResult :: Result -> State Int ()
+recordResult = \case
+  (Boss, _) -> return ()
+  (Player, m') -> do
+    m <- get
+    if m' < m
+      then put m'
+      else return ()
+
+performTurn :: GameState -> [Outcome]
+performTurn gs = case gs^.toPlay of
+  Boss -> [bossAttack gs]
+  Player -> flip castSpell gs <$> availableSpells gs
+
+castSpell :: Spell -> GameState -> Outcome
+castSpell (Spell _ c a) = applySpellAction a . (manaSpent +~ c) . (playerMana -~ c)
+
+applySpellAction :: SpellAction -> GameState -> Outcome
+applySpellAction = \case
+  AttackBoss (Attack d h) -> checkForWinner . (playerHealth +~ h) . (bossHealth -~ d)
+  StartEffect e -> Right . (effects %~ (e:))
+
+bossAttack :: GameState -> Outcome
+bossAttack gs = checkForWinner . (playerHealth -~ damage) $ gs
+  where
+    shield = playerShield gs
+    damage = nonNeg $ gs^.bossDamage - shield
+    nonNeg x
+      | x < 0 = 0
+      | otherwise = x
+
 playerShield :: GameState -> Int
 playerShield gs
   | Shield `elem` activeEffectTypes gs = 7
@@ -60,8 +112,8 @@ playerShield gs
 applyEffects :: GameState -> Outcome
 applyEffects gs = foldM (flip applyEffectType) gs (activeEffectTypes gs)
 
-decrementEffectDurations :: GameState -> GameState
-decrementEffectDurations = removeExpiredEffects . decrementDurations
+advanceEffects :: GameState -> GameState
+advanceEffects = removeExpiredEffects . decrementDurations
   where
     decrementDurations = effects.traverse.duration -~ 1
     removeExpiredEffects = effects %~ filter notExpired
@@ -78,8 +130,8 @@ applyEffectType = \case
 
 checkForWinner :: GameState -> Outcome
 checkForWinner gs
-  | gs^.playerHealth <= 0 = Left Boss
-  | gs^.bossHealth <= 0 = Left Player
+  | gs^.playerHealth <= 0 = Left (Boss, gs^.manaSpent)
+  | gs^.bossHealth <= 0 = Left (Player, gs^.manaSpent)
   | otherwise = Right gs
 
 availableSpells :: GameState -> [Spell]
@@ -89,9 +141,12 @@ availableSpells gs = filter spellIsAvailable spellBank
     aets = activeEffectTypes gs
     spellIsAvailable s
       | cost s > mana = False
-      | otherwise = case result s of
+      | otherwise = case action s of
           AttackBoss _ -> True
           StartEffect (Effect et _) -> et `notElem` aets
+
+endTurn :: GameState -> GameState
+endTurn = (toPlay %~ opponent) . advanceEffects
 
 opponent :: Role -> Role
 opponent = \case
@@ -102,9 +157,9 @@ spellBank :: [Spell]
 spellBank =
   [ Spell "Magic Missile" 53 (AttackBoss (Attack 4 0))
   , Spell "Drain" 73 (AttackBoss (Attack 2 2))
-  , Spell "Shield" 113 (StartEffect (Effect Shield 6))
   , Spell "Poison" 173 (StartEffect (Effect Poison 6))
   , Spell "Recharge" 229 (StartEffect (Effect Recharge 5))
+  , Spell "Shield" 113 (StartEffect (Effect Shield 6))
   ]
 
 initialGameState :: GameState
