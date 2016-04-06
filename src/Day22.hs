@@ -116,8 +116,8 @@ advanceEffects :: GameState -> GameState
 advanceEffects = removeExpiredEffects . decrementDurations
   where
     decrementDurations = effects.traverse.duration -~ 1
-    removeExpiredEffects = effects %~ filter notExpired
-    notExpired e = e^.duration > 0
+    removeExpiredEffects = effects %~ filter (not . expired)
+    expired e = e^.duration < 0
 
 activeEffectTypes :: GameState -> [EffectType]
 activeEffectTypes gs = gs^..effects.traverse.effectType
