@@ -36,6 +36,7 @@ library:
     - scientific
     - split
     - text
+    - vector
 
 benchmarks:
   criterion:
