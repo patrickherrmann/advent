@@ -13,11 +13,13 @@ type Result = (Role, Int)
 data GameState = GameState
   { _playerHealth :: Int
   , _playerMana :: Int
+  , _playerArmor :: Int
   , _manaSpent :: Int
   , _bossHealth :: Int
   , _bossDamage :: Int
   , _effects :: [Effect]
   , _toPlay :: Role
+  , _difficulty :: Difficulty
   } deriving (Show)
 
 data Effect = Effect
@@ -51,20 +53,29 @@ data Role
   = Player
   | Boss
   deriving (Show, Eq)
+
+data Difficulty
+  = Easy
+  | Hard
+  deriving (Show, Eq)
   
 makeLenses ''GameState
 makeLenses ''Effect
 
 cheapestWin :: GameState -> Int
-cheapestWin gs = execState (findCheapestWin gs) maxBound
+cheapestWin gs = execState (findCheapest gs) maxBound
 
-findCheapestWin :: GameState -> State Int ()
-findCheapestWin gs = pruneTree gs $
-  case applyEffects gs of
-    Left r -> recordResult r
-    Right gs' -> forM_ (performTurn gs') $ \case
-      Left r -> recordResult r
-      Right gs'' -> findCheapestWin $ endTurn gs''
+findCheapest :: GameState -> State Int ()
+findCheapest gs = pruneTree gs $
+  checkOutcome (preTurnDrain gs) $ \gs' ->
+  checkOutcome (applyEffects gs') $ \gs'' ->
+  forM_ (performTurn gs'') $ \o ->
+  checkOutcome o (findCheapest . endTurn)
+
+checkOutcome :: Outcome -> (GameState -> State Int ()) -> State Int ()
+checkOutcome o f = case o of
+  Left r -> recordResult r
+  Right gs -> f gs
 
 pruneTree :: GameState -> State Int () -> State Int ()
 pruneTree gs a = do
@@ -82,6 +93,11 @@ recordResult = \case
       then put m'
       else return ()
 
+preTurnDrain :: GameState -> Outcome
+preTurnDrain gs = if gs^.difficulty == Hard && gs^.toPlay == Player
+  then checkForWinner $ (playerHealth -~ 1) gs
+  else Right gs
+
 performTurn :: GameState -> [Outcome]
 performTurn gs = case gs^.toPlay of
   Boss -> [bossAttack gs]
@@ -98,33 +114,27 @@ applySpellAction = \case
 bossAttack :: GameState -> Outcome
 bossAttack gs = checkForWinner . (playerHealth -~ damage) $ gs
   where
-    shield = playerShield gs
-    damage = nonNeg $ gs^.bossDamage - shield
+    damage = nonNeg $ gs^.bossDamage - gs^.playerArmor
     nonNeg x
       | x < 0 = 0
       | otherwise = x
 
-playerShield :: GameState -> Int
-playerShield gs
-  | Shield `elem` activeEffectTypes gs = 7
-  | otherwise = 0
-
 applyEffects :: GameState -> Outcome
-applyEffects gs = foldM (flip applyEffectType) gs (activeEffectTypes gs)
+applyEffects gs = advanceEffects <$> foldM (flip applyEffectType) gs (activeEffectTypes gs)
 
 advanceEffects :: GameState -> GameState
 advanceEffects = removeExpiredEffects . decrementDurations
   where
     decrementDurations = effects.traverse.duration -~ 1
     removeExpiredEffects = effects %~ filter (not . expired)
-    expired e = e^.duration < 0
+    expired e = e^.duration <= 0
 
 activeEffectTypes :: GameState -> [EffectType]
 activeEffectTypes gs = gs^..effects.traverse.effectType
 
 applyEffectType :: EffectType -> GameState -> Outcome
 applyEffectType = \case
-  Shield -> Right
+  Shield -> Right . (playerArmor +~ 7)
   Recharge -> Right . (playerMana +~ 101)
   Poison -> checkForWinner . (bossHealth -~ 3)
 
@@ -146,7 +156,7 @@ availableSpells gs = filter spellIsAvailable spellBank
           StartEffect (Effect et _) -> et `notElem` aets
 
 endTurn :: GameState -> GameState
-endTurn = (toPlay %~ opponent) . advanceEffects
+endTurn = (toPlay %~ opponent) . (playerArmor .~ 0)
 
 opponent :: Role -> Role
 opponent = \case
@@ -166,9 +176,11 @@ initialGameState :: GameState
 initialGameState = GameState
   { _playerHealth = 50
   , _playerMana = 500
+  , _playerArmor = 0
   , _manaSpent = 0
   , _bossHealth = 51
   , _bossDamage = 9
   , _effects = []
   , _toPlay = Player
+  , _difficulty = Easy
   }
