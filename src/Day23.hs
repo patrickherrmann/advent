@@ -38,29 +38,34 @@ executeProgram m p = execState (runProgram p) m
 
 runProgram :: Program -> State Machine ()
 runProgram p = do
-  pci <- use pc
-  case p V.!? pci of
+  i <- use pc
+  case p V.!? i of
     Nothing -> return ()
-    Just i -> do
-      runInstruction pci i
+    Just instr -> do
+      runInstruction i instr
       runProgram p
 
 runInstruction :: Int -> Instruction -> State Machine ()
 runInstruction i = \case
-  Hlf r -> reg r %= (`div` 2) >> pc += 1
-  Tpl r -> reg r *= 3 >> pc += 1
-  Inc r -> reg r += 1 >> pc += 1
-  Jmp o -> pc .= i + o
-  Jie r o -> do
-    rv <- use (reg r)
-    if even rv
-      then pc .= i + o
-      else pc += 1
-  Jio r o -> do
-    rv <- use (reg r)
-    if rv == 1
-      then pc .= i + o
-      else pc += 1
+  Hlf r -> reg r %= (`div` 2) >> next
+  Tpl r -> reg r *= 3 >> next
+  Inc r -> reg r += 1 >> next
+  Jmp o -> jumpTo (i + o)
+  Jie r o -> branch r even (i + o)
+  Jio r o -> branch r (==1) (i + o)
+
+branch :: Register -> (Int -> Bool) -> Int -> State Machine ()
+branch r p i = do
+  rv <- use (reg r)
+  if p rv
+    then jumpTo i
+    else next
+
+jumpTo :: Int -> State Machine ()
+jumpTo i = pc .= i
+
+next :: State Machine ()
+next = pc += 1
 
 reg :: Register -> Lens' Machine Int
 reg = \case
