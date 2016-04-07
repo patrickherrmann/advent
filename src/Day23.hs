@@ -42,27 +42,27 @@ runProgram p = do
   case p V.!? i of
     Nothing -> return ()
     Just instr -> do
-      runInstruction i instr
+      runInstruction instr
       runProgram p
 
-runInstruction :: Int -> Instruction -> State Machine ()
-runInstruction i = \case
+runInstruction :: Instruction -> State Machine ()
+runInstruction = \case
   Hlf r -> reg r %= (`div` 2) >> next
   Tpl r -> reg r *= 3 >> next
   Inc r -> reg r += 1 >> next
-  Jmp o -> jumpTo (i + o)
-  Jie r o -> branch r even (i + o)
-  Jio r o -> branch r (==1) (i + o)
+  Jmp o -> jumpBy o
+  Jie r o -> branch r even o
+  Jio r o -> branch r (==1) o
 
 branch :: Register -> (Int -> Bool) -> Int -> State Machine ()
-branch r p i = do
+branch r p o = do
   rv <- use (reg r)
   if p rv
-    then jumpTo i
+    then jumpBy o
     else next
 
-jumpTo :: Int -> State Machine ()
-jumpTo i = pc .= i
+jumpBy :: Int -> State Machine ()
+jumpBy o = pc += o
 
 next :: State Machine ()
 next = pc += 1
