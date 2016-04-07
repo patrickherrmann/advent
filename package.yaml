@@ -9,7 +9,11 @@ category: Puzzles
 
 github: patrickherrmann/advent
 
-ghc-options: -O2 -Wall -fno-warn-incomplete-patterns
+ghc-options:
+  -O2
+  -Wall
+  -fno-warn-incomplete-patterns
+  -fno-warn-unused-do-bind
 default-extensions:
   - LambdaCase
   - ViewPatterns
