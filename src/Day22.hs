@@ -5,6 +5,8 @@ module Day22 where
 import Control.Lens
 import Control.Monad
 import Control.Monad.State.Lazy
+import Data.Maybe
+import Safe
 
 type Outcome = Either Result GameState
 
@@ -172,15 +174,16 @@ spellBank =
   , Spell "Shield" 113 (StartEffect (Effect Shield 6))
   ]
 
-initialGameState :: GameState
-initialGameState = GameState
-  { _playerHealth = 50
-  , _playerMana = 500
-  , _playerArmor = 0
-  , _manaSpent = 0
-  , _bossHealth = 51
-  , _bossDamage = 9
-  , _effects = []
-  , _toPlay = Player
-  , _difficulty = Easy
-  }
+initializeGameState :: String -> Difficulty -> GameState
+initializeGameState s diff = GameState
+    { _playerHealth = 50
+    , _playerMana = 500
+    , _playerArmor = 0
+    , _manaSpent = 0
+    , _bossHealth = hp
+    , _bossDamage = d
+    , _effects = []
+    , _toPlay = Player
+    , _difficulty = diff
+    }
+  where [hp, d] = catMaybes $ readMay <$> words s
