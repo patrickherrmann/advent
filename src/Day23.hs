@@ -33,8 +33,8 @@ data Machine = Machine
 
 makeLenses ''Machine
 
-executeProgram :: Program -> Machine
-executeProgram p = execState (runProgram p) initialMachine
+executeProgram :: Machine -> Program -> Machine
+executeProgram m p = execState (runProgram p) m
 
 runProgram :: Program -> State Machine ()
 runProgram p = do
@@ -70,6 +70,13 @@ reg = \case
 initialMachine :: Machine
 initialMachine = Machine
   { _ra = 0
+  , _rb = 0
+  , _pc = 0
+  }
+
+initialMachine2 :: Machine
+initialMachine2 = Machine
+  { _ra = 1
   , _rb = 0
   , _pc = 0
   }
