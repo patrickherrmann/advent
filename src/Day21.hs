@@ -46,9 +46,9 @@ advanceBattle = \case
     Battle Player b (Attacker (php - d + pa) pd pa)
 
 createPlayer :: HitPoints -> [Item] -> (Gold, Attacker)
-createPlayer h = foldr equipItem (0, (Attacker h 0 0))
+createPlayer h = foldr equipItem (0, Attacker h 0 0)
   where
-    equipItem (Item _ g d a) (cost, (Attacker hp pd pa)) =
+    equipItem (Item _ g d a) (cost, Attacker hp pd pa) =
       (cost + g, Attacker hp (pd + d) (pa + a))
 
 itemSets :: [[Item]]

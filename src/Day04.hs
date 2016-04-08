@@ -15,4 +15,4 @@ findAdventCoin (pack -> key) zs = i
 
 makesAdventCoin :: ByteString -> ByteString -> Int -> Bool
 makesAdventCoin key prefix i = prefix `BS.isPrefixOf` encode coin
-  where coin = hash $ key `BS.append` (pack $ show i)
+  where coin = hash $ key `BS.append` pack (show i)

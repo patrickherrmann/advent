@@ -18,7 +18,7 @@ score = nutrition . map scoreStat . transpose . map stats
   where nutrition ss = (product $ init ss, last ss)
 
 stats :: (Int, Ingredient) -> [Int]
-stats (n, (Ingredient _ ps)) = map (*n) ps
+stats (n, Ingredient _ ps) = map (*n) ps
 
 scoreStat :: [Int] -> Int
 scoreStat = atLeastZero . sum

@@ -82,18 +82,14 @@ checkOutcome o f = case o of
 pruneTree :: GameState -> State Int () -> State Int ()
 pruneTree gs a = do
   m <- get
-  if gs^.manaSpent >= m
-    then return ()
-    else a
+  unless (gs^.manaSpent >= m) a
 
 recordResult :: Result -> State Int ()
 recordResult = \case
   (Boss, _) -> return ()
   (Player, m') -> do
     m <- get
-    if m' < m
-      then put m'
-      else return ()
+    when (m' < m) $ put m'
 
 preTurnDrain :: GameState -> Outcome
 preTurnDrain gs = if gs^.difficulty == Hard && gs^.toPlay == Player
