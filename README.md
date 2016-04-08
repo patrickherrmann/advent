@@ -1,5 +1,4 @@
 # :christmas_tree: :santa: Advent of Code :santa: :christmas_tree:
---------
 
 This package contains my solutions to the puzzles at [adventofcode.com](http://adventofcode.com).
 
@@ -26,5 +25,4 @@ $ stack repl --no-load
 λ> p <- parseProgram <$> readFile "inputs/Day23.txt"
 λ> executeProgram initialMachine p
 Machine {_ra = 1, _rb = 255, _pc = 48}
-λ> 
 ```
