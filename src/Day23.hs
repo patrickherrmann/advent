@@ -4,8 +4,8 @@ module Day23 where
 
 import Control.Lens
 import Control.Monad.State.Strict
-import Text.Parsec hiding (State)
 import qualified Data.Vector as V
+import Text.Parsec hiding (State)
 
 type Offset = Int
 type Program = V.Vector Instruction

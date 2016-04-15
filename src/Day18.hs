@@ -1,8 +1,8 @@
 module Day18 where
 
-import Data.Maybe
 import Control.Monad
 import Data.Map ((!))
+import Data.Maybe
 import qualified Data.Map as Map
 
 type Coord = (Int, Int)

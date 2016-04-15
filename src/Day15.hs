@@ -1,8 +1,8 @@
 module Day15 where
 
-import Text.Parsec
 import Control.Monad
 import Data.List
+import Text.Parsec
 
 data Ingredient = Ingredient String [Int] deriving (Show)
 

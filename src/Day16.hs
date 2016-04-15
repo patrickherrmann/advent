@@ -1,7 +1,7 @@
 module Day16 where
 
-import Text.Parsec
 import Control.Monad
+import Text.Parsec
 
 type Compound = (String, Int)
 type CompoundReading = String -> (Int -> Int -> Bool)

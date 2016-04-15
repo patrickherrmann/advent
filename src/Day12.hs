@@ -3,9 +3,9 @@
 module Day12 where
 
 import Data.Aeson
+import Data.ByteString.Lazy.Char8 (pack)
 import Data.Maybe
 import Data.Scientific
-import Data.ByteString.Lazy.Char8 (pack)
 
 decodeJson :: String -> Value
 decodeJson = fromJust . decode . pack

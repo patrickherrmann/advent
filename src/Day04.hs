@@ -1,11 +1,11 @@
 module Day04 where
 
-import Data.List (find)
-import Data.ByteString.Char8 (pack)
-import Data.ByteString (ByteString)
-import qualified Data.ByteString as BS
 import Crypto.Hash.MD5
+import Data.ByteString (ByteString)
 import Data.ByteString.Base16
+import Data.ByteString.Char8 (pack)
+import Data.List (find)
+import qualified Data.ByteString as BS
 
 findAdventCoin :: String -> Int -> Int
 findAdventCoin (pack -> key) zs = i

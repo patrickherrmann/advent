@@ -2,11 +2,11 @@
 
 module Day19 where
 
+import Data.List
+import Data.Ord
 import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
 import Text.Parsec
-import Data.List
-import Data.Ord
 
 type Sub = (Text, Text)
 type Molecule = Text

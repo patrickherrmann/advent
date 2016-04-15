@@ -1,8 +1,8 @@
 module Day14 where
 
-import Text.Parsec
 import Control.Monad
 import Data.List
+import Text.Parsec
 
 data Reindeer = Reindeer String Int Int Int deriving (Show)
 

@@ -1,12 +1,12 @@
 module Day07 where
 
-import Data.Word
+import Control.Monad.State.Lazy
 import Data.Bits
+import Data.Map.Strict ((!))
+import Data.Word
+import qualified Data.Map.Strict as Map
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Data.Map.Strict ((!))
-import qualified Data.Map.Strict as Map
-import Control.Monad.State.Lazy
 
 type Instruction = (Ident, Expr)
 

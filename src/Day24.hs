@@ -1,7 +1,7 @@
 module Day24 where
 
-import Data.Monoid
 import Data.List
+import Data.Monoid
 import Data.Ord
 import Data.Vector (Vector, snoc)
 import qualified Data.Vector as V

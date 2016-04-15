@@ -1,9 +1,9 @@
 module Day13 where
 
-import Day09 hiding (parseEdges, pathDistance)
-import Text.Parsec
 import Control.Monad
+import Day09 hiding (parseEdges, pathDistance)
 import qualified Data.Map as Map
+import Text.Parsec
 
 maximumWithoutPat :: String -> Int
 maximumWithoutPat = maximumHappiness . constructGraph . parseEdges

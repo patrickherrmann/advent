@@ -2,8 +2,8 @@ module Day09 where
 
 import Data.List
 import Data.Ord
-import Text.Parsec
 import qualified Data.Map as Map
+import Text.Parsec
 
 type Node = String
 type Distance = Int
