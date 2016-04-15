@@ -60,7 +60,7 @@ data Difficulty
   = Easy
   | Hard
   deriving (Show, Eq)
-  
+
 makeLenses ''GameState
 makeLenses ''Effect
 
