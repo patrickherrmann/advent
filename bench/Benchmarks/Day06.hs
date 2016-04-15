@@ -1,8 +1,8 @@
 module Benchmarks.Day06 (benchmarks) where
 
-import Text.Heredoc
 import Criterion (Benchmark, bench, nf)
 import Day06
+import Text.Heredoc
 
 benchmarks :: [Benchmark]
 benchmarks =
